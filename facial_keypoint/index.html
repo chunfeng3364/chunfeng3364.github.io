@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facial Keypoint Detection with Neural Networks - Paris Zhang</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Facial Keypoint Detection with Neural Networks</h1>
+    <h2 style="text-align: center;">CS 194-26 Proj5</h2>
+    <h2 style="text-align: center;">Han (Paris) Zhang</h2>
+    <div class="section">
+        <h2>Overview</h2>
+        <p>
+            In this project, we apply different types of neural network on facial images to predict the facial keypoints, which, in the previous projects, we have to manually select.
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>Nose Tip Detection</h2>
+        <p>
+            First, we train an initial toy model for nose tip detection with the IMM Face <a href="https://web.archive.org/web/20210305094647/http://www2.imm.dtu.dk/~aam/datasets/datasets.html">Database</a>. We convert the nose detection problem into pixel coordinate regression with the input as a gray scale image and the output as (x, y) numbers. 
+
+            The input images are preprocessed to be smaller for a faster training time. Below we show some examples of the training data from the dataloader. 
+        </p>
+    </div>
+    <div class="row" style="width: 80%;">
+        <div class="column">
+            <img src="final/nose/ground_truth.png">
+            <div class="image-offset">Ground truth</div>
+        </div>
+    </div>
+    <div class="section">
+        <p>
+            The structure of Our CNN is as follows. Each convolution layer is followed by a ReLU followed by a maxpool with kernel size 2*2. The first fully connected layer is followed by a ReLU.
+        </p>
+        <code>
+            Net(<br>
+            (conv1): Conv2d(1, 12, kernel_size=(7, 7), stride=(1, 1))<br>
+            (conv2): Conv2d(12, 16, kernel_size=(5, 5), stride=(1, 1))<br>
+            (conv3): Conv2d(16, 32, kernel_size=(3, 3), stride=(1, 1))<br>
+            (fc1): Linear(in_features=896, out_features=128, bias=True)<br>
+            (fc2): Linear(in_features=128, out_features=2, bias=True)<br>
+            )
+        </code>
+    </div>
+    <div class="section">
+        <p>
+            We use Mean Squared Error loss and Adam Optimizer. With a learning rate of 1e-3 or 1e-4 we run the training loop for 25 epoches. As shown, both validation curves have some small jumps during the training, and larger learning rate leads to larger jumps. It's not very obvious from the plots, but the run with lr=1e-4 learns a lot slower than the run with lr=1e-3. When lr=1e-4, the validation loss ends up at 0.00445, while the validation loss achieves 0.00121 with lr=1e-3.
+        </p>
+    </div>
+    <div class="row" style="width: 50%;">
+        <div class="column">
+            <img src="final/nose/MSE.png">
+            <div class="image-offset">Mean Squared Error</div>
+        </div>
+    </div>
+    <div class="section">
+        <p>
+            Below we show the nose tip prediction on the validation set from the model with lr=1e-3. The green points are ground truths and the red points are predictions. We can see that most predictions are close to the ground-truth points, while there are some failures. I think the failures mostly come from the person not facing the camera, and some images don't have strong contrast, which creates difficulty for the model to recognize the nose tips.
+        </p>
+    </div>
+    <div class="row" style="width: 80%;">
+        <div class="column">
+            <img src="final/nose/pred-0.001.png">
+            <div class="image-offset">Nose tip prediction</div>
+        </div>
+    </div>
+    <div class="section">
+        <p>
+            We also vary the structure of the neural network and change the learning rate to 5e-4. The new structure is as follows. Each convolution layer is followed by a ReLU, and the first three layers are further followed by a maxpool with kernel size 2*2. The first fully connected layer is followed by a ReLU.
+        </p>
+        <code>
+            Net2(<br>
+                (conv1): Conv2d(1, 12, kernel_size=(7, 7), stride=(1, 1))<br>
+                (conv2): Conv2d(12, 16, kernel_size=(5, 5), stride=(1, 1))<br>
+                (conv3): Conv2d(16, 32, kernel_size=(3, 3), stride=(1, 1))<br>
+                (conv4): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1))<br>
+                (fc1): Linear(in_features=320, out_features=64, bias=True)<br>
+                (fc2): Linear(in_features=64, out_features=2, bias=True)<br>
+            )
+        </code>
+    </div>
+    <div class="section">
+        <p>
+            From my point of view, the new model has worse performance than our original model. 
+        </p>
+    </div>
+    <div class="row" style="width: 80%;">
+        <div class="column">
+            <img src="final/nose/pred-new.png">
+            <div class="image-offset">Nose tip prediction (new model)</div>
+        </div>
+    </div>
+
+
+    <div class="section">
+        <h2>Full Facial Keypoints Detection</h2>
+        <p>
+            Next, we move forward to try to detect all 58 facial keypoints. We resize the images to 120*160, and apply data augmentations to prevent model overfitting. The images are randomly flipped horizontally, shifted from x and y axis, and ratate for -15 to 15 degrees. Below are examples of the training data from the dataloader.
+        </p>
+    </div>
+    <div class="row" style="width: 80%;">
+        <div class="column">
+            <img src="final/full/ground_truth.png">
+            <div class="image-offset">Ground truth</div>
+        </div>
+    </div>
+    <div class="section">
+        <p>
+            The structure of Our CNN is as follows. Each convolution layer is followed by a ReLU, and the 2, 3, 4, 5 layers are further followed by a maxpool with kernel size 2*2. The first fully connected layer is followed by a ReLU.
+        </p>
+        <code>
+            Net(<br>
+            (conv1): Conv2d(1, 12, kernel_size=(5, 5), stride=(1, 1))<br>
+            (conv2): Conv2d(12, 16, kernel_size=(5, 5), stride=(1, 1))<br>
+            (conv3): Conv2d(16, 32, kernel_size=(3, 3), stride=(1, 1))<br>
+            (conv4): Conv2d(32, 64, kernel_size=(3, 3), stride=(1, 1))<br>
+            (conv5): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1))<br>
+            (fc1): Linear(in_features=2240, out_features=512, bias=True)<br>
+            (fc2): Linear(in_features=512, out_features=116, bias=True)<br>
+            )
+        </code>
+    </div>
+    <div class="section">
+        <p>
+            Again, we use Mean Squared Error loss and Adam Optimizer. With a learning rate of 5e-4 we run the training loop for 50 epoches. 
+        </p>
+    </div>
+    <div class="row" style="width: 30%;">
+        <div class="column">
+            <img src="final/full/MSE.png">
+            <div class="image-offset">Mean Squared Error</div>
+        </div>
+    </div>
+    <div class="section">
+        <p>
+            Below are the predictions on the validation set. The green points are ground truths and the red points are predictions. We can see there are some successful predictions close to the ground truths, as well as failures (e.g. the 2 images at the middle of the second row). I think the failures might come from the person's perspective, expression, as well as the rotation that makes the image not recognizable from the model.
+        </p>
+    </div>
+    <div class="row" style="width: 80%;">
+        <div class="column">
+            <img src="final/full/pred2.png">
+            <div class="image-offset">Facial keypoints detection</div>
+        </div>
+    </div>
+    <div class="section">
+        <p>
+            We also visulize samples of the learned filters of the first and last convolution layers.
+        </p>
+    </div>
+    <div class="row" style="width: 80%;">
+        <div class="column">
+            <img src="final/full/filter1.png">
+            <div class="image-offset">First Layer</div>
+        </div>
+        <div class="column">
+            <img src="final/full/filter5.png">
+            <div class="image-offset">Last Layer</div>
+        </div>
+    </div>
+
+
+    <div class="section">
+        <h2>Train With Larger Dataset</h2>
+        <p>
+            Now we transition to using a larger dataset (ibug face in the wild dataset). We preprocess the input images by cropping with bounding boxes, resizing, and using data augmentation, which randomly alters the bringhtness and sturation, as well as shifts and rotates the images. Below are examples of the training data.
+        </p>
+    </div>
+    <div class="row" style="width: 80%;">
+        <div class="column">
+            <img src="final/ibug/ground_truth_bbox.png">
+            <div class="image-offset">Ground truth</div>
+        </div>
+    </div>
+    <div class="section">
+        <p>
+            We use pretrained ResNet50 model, with the output channel changed to 136. Here we use the colored images as input so we keep the input chennel as 3.
+        </p>
+    </div>
+    <div class="row" style="width: 80%;">
+        <div class="column">
+            <img src="final/ibug/archi0.png">
+        </div>
+        <div class="column">
+            <img src="final/ibug/archi1.png">
+        </div>
+        <div class="column">
+            <img src="final/ibug/archi2.png">
+        </div>
+    </div>
+    <div class="section">
+        <p>
+            Again, we use Mean Squared Error loss and Adam Optimizer. With a learning rate of 1e-3 we run the training loop for 50 epoches. We use the model with the lowest validation error.
+        </p>
+    </div>
+    <div class="row" style="width: 30%;">
+        <div class="column">
+            <img src="final/ibug/loss.png">
+            <div class="image-offset">Mean Squared Error</div>
+        </div>
+    </div>
+    <div class="section">
+        <p>
+            Below are some predictions on the test set. I think in general the predictions are pretty good, except that some points are off because the face is not facing the camera or the face is covered by hand or glasses.
+        </p>
+    </div>
+    <div class="row" style="width: 80%;">
+        <div class="column">
+            <img src="final/ibug/pred.png">
+            <div class="image-offset">Test set facial keypoints detection</div>
+        </div>
+    </div>
+    <div class="section">
+        <p>
+            I applied the model to my own images. The model performs pretty well on my faces as they are facing the camera. The prediction on Nana's face (second) is a little off, probably because she is not directly facing the camera, but with an angle.
+        </p>
+    </div>
+    <div class="row" style="width: 60%;">
+        <div class="column">
+            <img src="final/ibug/pred-own.png">
+            <div class="image-offset">Own images facial keypoints detection</div>
+        </div>
+    </div>
+
+
+    <div class="section">
+        <h2>Pixelwise Classification</h2>
+        <p>
+            We can also convert the regression problem into a pixelwise classification problem: For every pixel, the model predicts the probability of it being the keypoint. For input images, we first turn the ground truth keypoints into pixel-aligned heatmaps. I tried applying Gaussian with sigma=25, kernel size=9, but in practice, the Gaussian convolution takes too much time, so I instead use multivariate normal distribution to create heatmaps. For each keypoint, I draw 1000 random samples from a multivariate normal distribution with mean of the keypoint and covariance of [[9, 0], [0, 9]]. Below are examples of accumulated heatmaps for the two methods.
+        </p>
+    </div>
+    <div class="row" style="width: 80%;">
+        <div class="column">
+            <img src="final/pixel/heatmap.png">
+            <div class="image-offset">Ground truth accumulated heatmap (Gaussian)</div>
+        </div>
+    </div>
+    <div class="row" style="width: 80%;">
+        <div class="column">
+            <img src="final/pixel/heatmap-normal.png">
+            <div class="image-offset">Ground truth accumulated heatmap (Multivariate Normal)</div>
+        </div>
+    </div>
+    <div class="section">
+        <p>
+            We use pretrained <a href="https://pytorch.org/hub/mateuszbuda_brain-segmentation-pytorch_unet/">U-Net</a> model, with the output channel changed to 68. 
+        </p>
+    </div>
+    <div class="row" style="width: 60%;">
+        <div class="column">
+            <img src="final/pixel/archi0.png">
+        </div>
+        <div class="column">
+            <img src="final/pixel/archi1.png">
+        </div>
+    </div>
+    <div class="section">
+        <p>
+            As now we are predicting the probability of each pixel, we use Cross Entropy loss and Adam Optimizer. With a learning rate of 1e-3 we run the training loop for 10 epoches.
+        </p>
+    </div>
+    <div class="row" style="width: 30%;">
+        <div class="column">
+            <img src="final/pixel/loss.png">
+            <div class="image-offset">Cross Entropy Loss</div>
+        </div>
+    </div>
+    <div class="section">
+        <p>
+            To convert the probability map back to point, we take the weighted average of the 15 coordinates with the highest probability. Below are some predictions on the test set. In general the predictions are in good shape, but there are some points off. I think that's because I didn't train enough epochs.
+        </p>
+    </div>
+    <div class="row" style="width: 80%;">
+        <div class="column">
+            <img src="final/pixel/pred.png">
+            <div class="image-offset">Test set facial keypoints detection</div>
+        </div>
+    </div>
+    <div class="section">
+        <p>
+            I applied the model to my own images. This model is able to capture the position of most facial features, but does a little worse on the points around the face shape. The results are similar to the test images above. I think the failure is mainly due to the lack of training.
+        </p>
+    </div>
+    <div class="row" style="width: 60%;">
+        <div class="column">
+            <img src="final/pixel/own.png">
+            <div class="image-offset">Own images facial keypoints detection</div>
+        </div>
+    </div>
+
+
+    <div class="section">
+        <h2>Kaggle</h2>
+        <p>
+            For my Kaggle submission, I continued training my model from part 3 for 50 more epochs (with the same model structure, loss type, optimizer type, and learning rate). I used the model from the epoch that has the lowest validation loss. My mean absolute error is 6.26626 (username: Paris Zhang).
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>Bells & Whistles - Face Morphing</h2>
+        <p>
+            I applied my best model onto the project 3's code to automatically detect the facial keypoints of my own photos. With these correspondence keypoints, I can reproduce my aging series. 
+        </p>
+    </div>
+    <div class="row" style="width: 60%;">
+        <div class="column">
+            <img src="final/bells/pred.png">
+            <div class="image-offset">Facial keypoints detection</div>
+        </div>
+    </div>
+    <div class="row" style="width: 20%;">
+        <div class="column">
+            <img src="final/bells/morph.gif">
+            <div class="image-offset">My aging morphing</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Bells & Whistles - 1 & 0 Mask</h2>
+        <p>
+            We also tried using 1 and 0 mask heatmaps for the landmarks in part 4 instead of Multivariate Normal.
+        </p>
+    </div>
+    <div class="row" style="width: 80%;">
+        <div class="column">
+            <img src="final/bells/heatmap.jpeg">
+            <div class="image-offset">Ground truth heatmap (1 and 0 mask)</div>
+        </div>
+    </div>
+    <div class="section">
+        <p>
+            We used the same setting as part 4. As shown, the predictions are worse than using the Multivariate Normal. I think it is expected since one-point mask will probably make it harder for the model to understand the pattern.
+        </p>
+    </div>
+    <div class="row" style="width: 80%;">
+        <div class="column">
+            <img src="final/bells/pred.jpeg">
+            <div class="image-offset">Test set facial keypoints detection</div>
+        </div>
+    </div>
+    <br><br><br>
+</body>
