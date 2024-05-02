@@ -1,0 +1,363 @@
+
+<!doctype html>
+<html lang="en">
+  <!--
+      Page    : index / MobApp
+      Version : 1.0
+      Author  : Colorlib
+      URI     : https://colorlib.com
+    -->
+
+  <head>
+    <title>
+        Naturally Supervised 3D Visual Grounding with Language-Regularized Concept Learners
+    </title>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta
+      name="description"
+      content="Naturally Supervised 3D Visual Grounding with Language-Regularized Concept Learners"
+    />
+    <meta name="keywords" content="visual reasoning, neuro-symbolic learning" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Inter:300,400,700"
+      rel="stylesheet"
+      type="text/css"
+    />
+
+    <!-- Font -->
+
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="./css/styles.css" rel="stylesheet" />
+
+  </head>
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-T4C2GQSR7K"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    
+    gtag('config', 'G-T4C2GQSR7K');
+  </script>
+
+  <body id="home" style="height: auto">
+    <div class="container-fluid" style="padding: 0">
+      <!--<section class="page-section bg-light">-->
+      <div class="page-section bg-light">
+        <div class="row justify-content-center">
+          <div class="col-lg-10 text-center mb-3 p-4" >
+            <h2>
+              <br /><br />Naturally Supervised 3D Visual Grounding with<br>Language-Regularized Concept Learners
+            </h2>
+            <br/>
+            <h5>CVPR 2024</h5>
+            <div class="d-flex justify-content-center" style="margin: auto">
+              <p>
+                <a href="https://chunfeng3364.github.io/" target="_blank">Chun Feng</a>*,
+                <a href="https://stanford.edu/~joycj/" target="_blank">Joy Hsu</a>*,
+                <a href="http://weiyuliu.com/" target="_blank">Weiyu Liu</a>, 
+                <a href="https://jiajunwu.com" target="_blank">Jiajun Wu</a>
+              </p>
+            </div>
+            
+            <div class="d-flex justify-content-center" style="margin: auto">
+              <p>[<a href="https://arxiv.org/abs/2404.19696" target="_blank">arXiv</a>]&nbsp;
+                [<a href="https://github.com/chunfeng3364/LARC" target="_blank">code</a>]&nbsp;
+              </p>
+            </div>
+            <!--<div class="d-flex justify-content-center">
+                  <p>Stanford University</p>
+
+                </div>-->
+          </div>
+        </div>
+        <!--</section>-->
+      </div>
+    </div>
+
+    <div class="container"  style="max-width: 56.6666%; margin: auto">
+      <div class="row">
+        <div class="col-md-10 hero-img">
+          <div class="d-flex justify-content-center">
+            <video width="100%" autoplay loop muted>
+                <source
+                src="./videos/fin_slides.mp4"
+                type="video/mp4"
+              />
+            </video>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid bg-light">
+      <div class="row justify-content-center">
+        <div class="col-lg-6 text-center">
+          <div class="text-left">
+            <br>
+            <center>
+              <h4>Abstract</h4>
+            </center>
+            <p class="text-muted text-description">
+              3D visual grounding is a challenging task that often requires direct and dense supervision, notably the semantic label for each object in the scene. 
+              In this paper, we instead study the naturally supervised setting that learns from only 3D scene and QA pairs, where prior works underperform. 
+              We propose the Language-Regularized Concept Learner (LARC), which uses constraints from language as regularization to significantly improve the accuracy of neuro-symbolic concept learners in the naturally supervised setting. 
+              Our approach is based on two core insights: 
+              the first is that language constraints (e.g., a word's relation to another) can serve as effective regularization for structured representations in neuro-symbolic models; 
+              the second is that we can query large language models to distill such constraints from language properties. We show that LARC improves performance of prior works in naturally supervised 3D visual grounding, and demonstrates a wide range of 3D visual reasoning capabilities &mdash; from zero-shot composition to data efficiency and transferability. 
+              Our method represents a promising step towards regularizing structured visual reasoning frameworks with language-based priors, for learning in settings without dense supervision. 
+            </p>
+          </div>
+        </div>
+      </div>
+      <br><br>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row justify-content-center">
+        <div class="col-lg-6 text-center">
+          <div class="text-left">
+            <br>
+            <center>
+              <h4>Naturally Supervised 3D Visual Grounding  </h4>
+            </center>
+            <p class="text-muted text-description">
+              We study the task of referring expression comprehension (3D-REC). The goal is to locate the target referred object in a 3D scene given a language utterance. 
+              Different from existing methods that require direct and dense supervision, LARC complete this task in a naturally supervised setting. 
+              LARC learns 3D visual grounding by looking at only scenes and question-answer pairs. LARC removes the need for pre-segmented object point clouds and object-level classification supervision.
+              
+              <img class="img-fluid" src="./figures/ppt_fig/setting.png"/>
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid bg-light">
+      <div class="row justify-content-center">
+        <div class="col-lg-6 text-center">
+          <div class="text-left">
+            <br>
+            <center>
+              <h4>Method</h4>
+            </center>
+            
+            <p class="text-muted text-description">
+              To learn in the naturally supervised setting, LARC combines language priors and neuro-symbolic concept learners.
+              
+              Neuro-symbolic concept learners decompose visual reasoning queries into modular functions, and execute them with neural networks. 
+              Each network outputs representations that can be indexed by its concept name and arity. 
+              Due to this modularity and structured representation, prior neuro-symbolic works have shown strong generalization, data efficiency, and transferability in the 3D domain. 
+              <br><br>
+              LARC builds on a structured neuro-symbolic model, and importantly regularizes the <b>structured</b> and <b>interpretable</b> representations based on <b>explicit language constraints</b>, in order to learn without direct supervision.<br><br>
+
+              <strong>3D Neuro-Symbolic Model</strong>
+              <br>
+              A neuro-symbolic concept learner for 3D grounding consists of three components:
+              <br>
+              1. A semantic parser parses the input utterance into a symbolic program that represents the reasoning process underlying the utterance. 
+              <br>
+              2. A 3D feature encoder extracts object feature f<sup>obj</sup>, and relational features f<sup>rel</sup> and f<sup>ternary</sup>, which represent object features, binary relations (e.g., <i>beside</i>) and ternary relations (e.g., <i>between</i>) among objects, respectively. 
+              <br>
+              3. A fully differentiable program executor takes the program and extracted features f<sup>obj</sup>, f<sup>binary</sup> and f<sup>ternary</sup>, and executes the program with the features to find the target object. 
+              <br><br>
+              <img class="img-fluid" src="./figures/ppt_fig/ns_model.png"/>
+              <br><br>
+
+              To enable learning in naturally supervised settings, LARC introduces regularization on intermediate representations based on language constraints. 
+              <br><br>
+
+              <strong>Constraints Generation with LLMs</strong>
+              <br>
+              LARC leverages general constraints derived from well-studied semantic relations between words, for example, symmetry, exclusivity, and synonymity, which are broadly applicable across all language-driven tasks. Notably, concepts satisfying these constraints can be distilled from LLMs based on language priors explicitly.<br><br>
+              <img class="img-fluid" src="./figures/ppt_fig/constraints.png"/>
+              <br><br>
+              
+              <strong>Constraints on Structured Representations</strong>
+              <br>
+              LARC effectively encodes semantic contexts from language into neuro-symbolic concept learners through regularization. 
+              <br><br>
+              Specifically, during the execution of neuro-symbolic programs, relations between objects are represented as probability matrices. Their elements are interpreted as the likelihood that the referred relation exists between the pair or triple of objects. For example, prob<sup>near</sup><sub>i,j</sub> specifies the probability that object <i>i</i> is near object <i>j</i>, where <i>i, j</i> are indices of objects. 
+              So, for each type of concepts, we encourage the probability matrices to behave differently. 
+              <br><br>
+              For example, for symmetric concepts (e.g., near), we encourage probability matrices to be symmetric, and penalize asymmetric ones, which is represented as a regularization loss in LARC.<br><br>
+              <img class="img-fluid" src="./figures/ppt_fig/regularize.png"/>
+            </p>
+          </div>
+
+          <br><br>
+          <!-- <div class="row justify-content-center">
+            <div class="col-lg-6">
+              <img class="img-fluid" src="./figures/systems_opensans-1.png" width="50%"/>
+            </div>
+          </div> -->
+
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row justify-content-center">
+        <div class="col-lg-6 ">
+          <br>
+          <center>
+            <h4>Zero-Shot Generalization</h4>
+          </center>
+          <div class="text-center">
+            <div class="text-left">
+              <p class="text-muted text-description">
+                We evaluate LARC's ability to zero-shot generalize to unseen concepts based on language composition rules. We create two test sets with concepts not seen during training: ternary relations (e.g., <i>center</i>, <i>between</i>) and antonyms (e.g., <i>not behind</i>, <i>not left</i>). Queries with these concepts are removed from the train set. 
+                <br> 
+              </p>
+            </div>
+
+            <!-- First card -->
+            <div class="card mb-4 mt-4 text-dark bg-light col-lg-12" >
+              <div class="card-header">Performance on unseen concepts</div>
+              <div class="row">
+                <div class="col-lg-12 text-center">
+                  <div
+                    class="text-left"
+                    style="max-width: 76.6666%; margin: auto"
+                  >
+                    <img class="img-fluid" src="./figures/plots/unseen_concept.png"/>
+                    <!-- <div class="row justify-content-center">
+                        <div class="col-lg-6">
+                            <img class="img-fluid" src="./figures/ternary.png" />
+                        </div>
+                    </div> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="text-left">
+              <p class="text-muted text-description">
+                We also evaluate LARC's transfer performance to an unseen dataset, by training on ReferIt3D and testing on ScanRefer, which contains new utterances on scenes from ScanNet. We retrieve a subset that reference the same object categories and relations as in ReferIt3D, such that all methods can be run inference-only. 
+                <br>
+              </p>
+            </div>
+
+            <!-- Second card -->
+            <div class="card mb-4 mt-4 text-dark bg-light col-lg-12" >
+              <div class="card-header">Performance on unseen dataset</div>
+              <div class="row">
+                <div class="col-lg-12 text-center">
+                  <div
+                    class="text-left"
+                    style="max-width: 76.6666%; margin: auto"
+                  >
+                    <img class="img-fluid" src="./figures/plots/unseen_dataset.png" />
+                    <!-- <div class="row justify-content-center">
+                        <div class="col-lg-6">
+                            <img class="img-fluid" src="" />
+                        </div>
+                    </div> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <br /><br />
+        </div>
+
+      </div>
+    </div>
+
+    <div class="container-fluid bg-light">
+      <div class="row justify-content-center">
+        <div class="col-lg-6">
+          <div class="text-left">
+            <br>
+            <center>
+              <h4>Data Efficiency</h4>
+            </center>
+            <p class="text-muted text-description">
+              We demonstrate that LARC retains strong data efficiency due to its modular concept learning framework. In the following table, we see that LARC is significantly more data efficient than prior works at 5%, 10%, 15%, 20%, and 25% of training data used. Notably, LARC sees a 6.8 point percent gain from the top-performing prior work with 10% of data.
+            </p>
+          </div>
+        </div>
+        
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <img class="img-fluid" src="./figures/plots/data-effi.png" />
+            <!-- figure of visualization -->
+        </div>
+      </div>
+      
+      <br /><br />
+    </div>
+
+    <div class="container-fluid">
+      <div class="row justify-content-center">
+        <div class="col-lg-6">
+          <div class="text-left">
+            <br>
+            <center>
+              <h4>Visualization</h4>
+            </center>
+            <p class="text-muted text-description">
+                Here, we present visualizations of LARC's and NS3D's learned features for symmetric (left two columns) and exclusive (right two columns) concepts; each matrix represents likelihood of pairs of objects' relations adhering to the given concept. LARC's features learn to encode constraints from language priors significantly more effectively than that of the neuro-symbolic baseline, NS3D.
+            </p>
+          </div>
+        </div>
+        
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <img class="img-fluid" src="./figures/ppt_fig/matrix.png" />
+            <!-- figure of visualization -->
+        </div>
+      </div>
+      
+      <br /><br />
+    </div>
+
+    <div class="container-fluid bg-light">
+      <div class="row justify-content-center">
+        <div class="col-lg-6">
+          <div class="text-left">
+            <br>
+            <center>
+              <h4><br />Code Release</h4>
+            </center>
+            <p class="text-muted text-description">
+                You can find our code <a href="https://github.com/chunfeng3364/LARC" target="_blank">here</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+
+  <footer class="my-5 text-center">
+    <p class="mb-2">
+      <small
+        >Template by
+        <a href="https://colorlib.com" style="color: #470206"
+          >Colorlib</a
+        ></small
+      >
+    </p>
+  </footer>
+
+  <!-- Bootstrap core JS-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Third party plugin JS-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+  <!-- Core theme JS-->
+  <script src="js/scripts.js"></script>
+</html>
+

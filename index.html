@@ -18,13 +18,13 @@
           <tr style="padding:0px">
             <td style="padding:2.5%;width:65%;vertical-align:middle">
               <p style="text-align:center">
-                <name>Chun Feng | 冯椿</name>
+                <name>Chun Feng</name>
               </p>
               <p>
                 I am a senior undergraduate student at the <a href="http://en.ustc.edu.cn/">University of Science and Technology of China</a>. 
               </p>
 	      <p>
-                Last summer, I was a summer intern working with Prof. <a href="https://jiajunwu.com/">Jiajun Wu</a> at Stanford University on 3D object grounding. We tried to minimize human supervision and leverage commonsense knowledge to guide reasoning. 
+                I used to be a summer intern working with Prof. <a href="https://jiajunwu.com/">Jiajun Wu</a> at Stanford University on 3D object grounding. 
               </p>
 	      <p>
                 I am also fortunate to work with Prof. <a href="https://www.chuatatseng.com/">Tat-Seng Chua</a> at the National University of Singapore on vision and language. 
@@ -54,28 +54,33 @@
         <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
           <tr>
             <td style="padding:20px;width:30%;vertical-align:middle">
-              <img src="images/rcl.png" width="100%" style="border-style: none">
+              <img src="figures/larc.png" width="100%" style="border-style: none">
             </td>
             <td width="70%" valign="middle">
-              <papertitle>Classification-Free 3D Object Grounding with Regularized Concept Learners</papertitle>
+              <papertitle>Naturally Supervised 3D Visual Grounding with Language-Regularized Concept Learners</papertitle>
               <br>
               <strong>Chun Feng*</strong>,
               <a href="https://web.stanford.edu/~joycj/">Joy Hsu*</a>,
               <a href="http://weiyuliu.com/">Weiyu Liu</a>,
               <a href="https://jiajunwu.com/">Jiajun Wu</a>
               <br>
-              <em>CVPR 2024 Accepted</em>
+              <em>CVPR 2024</em>
               <br>
-              <a href="https://drive.google.com/file/d/1vjqMSDFdUJv_QwwZFEMvmFUDNBDPrcaE/view?usp=sharing">PDF</a> /
-              <a href="https://chunfeng3364.github.io/">code</a>
-              <p>3D visual reasoning models often require direct supervision during training to achieve faithful 3D object grounding, for example, in the form of classification labels for each ground truth object bounding box in the scene. However, dense visual annotation for 3D scenes is difficult and expensive to acquire. In this paper, we study the more practical setting of classification-free 3D object grounding, where models do not use object-level classification supervision during training.</p>
+              <a href="https://arxiv.org/abs/2404.19696">PDF</a> /
+              <a href="https://github.com/chunfeng3364/LARC">code</a> /
+              <a href="./projects/larc_website/project_page.html" target="_blank">project page</a>
+              <p>
+                3D visual grounding is a challenging task that often requires direct and dense supervision, notably the semantic label for each object in the scene. 
+                In this paper, we instead study the naturally supervised setting that learns from only 3D scene and QA pairs, where prior works underperform. 
+                We propose the Language-Regularized Concept Learner (LARC), which uses constraints from language as regularization to significantly improve the accuracy of neuro-symbolic concept learners in the naturally supervised setting. 
+              </p>
               <br>
             </td>
           </tr>
 		
 	  <tr>
             <td style="padding:20px;width:30%;vertical-align:middle">
-              <img src="images/spatiotemporal.png" width="100%" style="border-style: none">
+              <img src="figures/str.png" width="100%" style="border-style: none">
             </td>
             <td width="70%" valign="middle">
               <papertitle>Discovering Spatio-Temporal Rationales for Video Question Answering</papertitle>
@@ -97,7 +102,7 @@
 
           <tr>
             <td style="padding:20px;width:30%;vertical-align:middle">
-              <img src="images/redundancy.png" width="100%" style="border-style: none">
+              <img src="figures/redundancy.png" width="100%" style="border-style: none">
             </td>
             <td width="70%" valign="middle">
               <papertitle>Redundancy-aware Transformer for Video Question Answering</papertitle>
